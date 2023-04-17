@@ -10,7 +10,7 @@ color = {
     "Hufflepuff": "yellow"
 }
 
-df = pd.read_csv('../assets/dataset_train.csv')
+df = pd.read_csv('../../assets/dataset_train.csv')
 features_to_drop = ['Index', 'First Name', 'Last Name', 'Birthday', 'Best Hand']
 df.drop(features_to_drop, axis=1, inplace=True)
 df = pd.DataFrame.dropna(df, axis=0)
