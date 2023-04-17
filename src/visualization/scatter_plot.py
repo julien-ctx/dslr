@@ -10,7 +10,7 @@ color = {
     "Hufflepuff": "yellow"
 }
 
-df = pd.read_csv('../assets/dataset_train.csv')
+df = pd.read_csv('../../assets/dataset_train.csv')
 df.dropna(axis=0, inplace=True)
 df_houses = {
     "Gryffindor": df[df["Hogwarts House"] == "Gryffindor"],

@@ -10,7 +10,7 @@ color = {
     "Hufflepuff": "yellow"
 }
 
-df = pd.read_csv('../assets/dataset_train.csv')
+df = pd.read_csv('../../assets/dataset_train.csv')
 df_houses = {
     "Gryffindor": df[df["Hogwarts House"] == "Gryffindor"].drop(df.iloc[:, :6], axis = 1),
     "Slytherin": df[df["Hogwarts House"] == "Slytherin"].drop(df.iloc[:, :6], axis = 1),

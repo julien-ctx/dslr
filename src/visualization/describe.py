@@ -25,5 +25,5 @@ def describe(dataset):
 		index = ["Count", "Mean", "Std", "25%", "50%", "75%", "Min", "Max"],
 		columns = dataset.columns.values[6:])
 
-df = pd.read_csv('../assets/dataset_train.csv')
+df = pd.read_csv('../../assets/dataset_train.csv')
 print(describe(df))
