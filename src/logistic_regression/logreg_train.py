@@ -26,5 +26,5 @@ if __name__ == "__main__":
 
 	# Drop NaN values, replace Left and Right by boolean values in order to make them count
 	reg_df = LogisticRegression.clean_data(df)
-	reg_df = LogisticRegression.standardize(reg_df)
+	reg_df = reg_df.apply(LogisticRegression.standardize)
 	print(reg_df)
