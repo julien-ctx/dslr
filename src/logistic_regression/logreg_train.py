@@ -2,8 +2,10 @@ import sys, os
 import pandas as pd
 import numpy as np
 
-class LogisticRegression:
+# https://fr.wikipedia.org/wiki/Encodage_one-hot
+# https://en.wikipedia.org/wiki/Softmax_function
 
+class LogisticRegression:
 	def __init__(self, df):
 		self.df = df
 		self.clean_data()
