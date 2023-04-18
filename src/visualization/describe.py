@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import math
+import math, sys, os
 
 def mean(x):
 	return np.nansum(x) / x.shape[0]
@@ -13,17 +13,29 @@ def quartiles(x):
 
 def std(x):
 	x = (x - mean(x)) ** 2
-	return math.sqrt(np.nansum(x) / x.shape[0])
+	return math.sqrt(np.nansum(x) / (x.shape[0]))
 
 def get_description(a):
+	a = a[~pd.isna(a)]
 	x = np.sort(a)
 	tmp = quartiles(x)
-	return x.shape[0], mean(x), std(x), tmp[0], tmp[1], tmp[2], x[0], x[x.shape[0] - 1]
+	return x.shape[0], mean(x), std(x), tmp[0], tmp[1], tmp[2], x[0], x[-1]
 
 def describe(dataset):
 	return pd.DataFrame(data = np.apply_along_axis(get_description, 0, np.array(dataset)[:,6:]), 
 		index = ["Count", "Mean", "Std", "25%", "50%", "75%", "Min", "Max"],
 		columns = dataset.columns.values[6:])
 
-df = pd.read_csv('../../assets/dataset_train.csv')
-print(describe(df))
+if __name__ == "__main__":
+	if len(sys.argv) != 2:
+		sys.exit("Error: wrong parameter number.")
+	if not os.path.exists(sys.argv[1]):
+		sys.exit("Error: dataset doesn't exist.")
+	try:
+		df = pd.read_csv(sys.argv[1])
+	except Exception as e:
+		sys.exit(f"Error: {e}")
+	print(describe(df))
+	
+	# Compare with the one of Pandas lib
+	# print(df.iloc[:, 5:].describe())
