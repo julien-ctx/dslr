@@ -13,13 +13,13 @@ def quartiles(x):
 
 def std(x):
 	x = (x - mean(x)) ** 2
-	return math.sqrt(np.nansum(x) / x.shape[0])
+	return math.sqrt(np.nansum(x) / (x.shape[0]))
 
 def get_description(a):
+	a = a[~pd.isna(a)]
 	x = np.sort(a)
-	x = x[~pd.isna(x)]
 	tmp = quartiles(x)
-	return x.shape[0], mean(x), std(x), tmp[0], tmp[1], tmp[2], np.nanmin(x), np.nanmax(x)
+	return x.shape[0], mean(x), std(x), tmp[0], tmp[1], tmp[2], x[0], x[-1]
 
 def describe(dataset):
 	return pd.DataFrame(data = np.apply_along_axis(get_description, 0, np.array(dataset)[:,6:]), 
@@ -38,4 +38,4 @@ if __name__ == "__main__":
 	print(describe(df))
 	
 	# Compare with the one of Pandas lib
-	print(df.iloc[:, 5:].describe())
+	# print(df.iloc[:, 5:].describe())
