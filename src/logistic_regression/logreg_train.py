@@ -10,8 +10,22 @@ class LogisticRegression:
 		self.df = df
 		self.clean_data()
 		self.standardize()
-		print(self.df)
+
+	# Get probability
+	def softmax(self):
+		exp = np.exp(self.logits)
+		self.softmax = exp / np.sum(exp, axis=1, keepdims=True)
+		print(self.softmax)
 	
+	# Data init
+	def init_data(self):
+		# Weights allows us, for each house to determine the sweep of every feature.
+		# It will be used later in our prediction and is set to 0.0 for the moment.
+		self.weights = np.zeros((self.df.shape[1], 4), dtype=float)
+		# Bias is added to take into account every value independently from their value.
+		self.bias = np.ones(4)
+		self.logits = self.df.to_numpy() @ self.weights + self.bias
+ 
 	# Data preprocessing
 	def clean_data(self):
 		new_df = self.df.dropna()
@@ -34,3 +48,6 @@ if __name__ == "__main__":
 		sys.exit(f"Error: {e}")
 
 	model = LogisticRegression(df)
+
+	model.init_data()
+	model.softmax()
