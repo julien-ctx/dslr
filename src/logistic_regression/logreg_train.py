@@ -4,6 +4,7 @@ import numpy as np
 
 # https://fr.wikipedia.org/wiki/Encodage_one-hot
 # https://en.wikipedia.org/wiki/Softmax_function
+# https://en.wikipedia.org/wiki/Sigmoid_function
 
 class LogisticRegression:
 	def __init__(self, df):
@@ -46,22 +47,25 @@ class LogisticRegression:
 
 	def get_weights_gradient(self, one_hot):
 		a = self.proba - one_hot
-		return self.df.to_numpy().T @ (self.proba - one_hot) / self.df.shape[0]
+		return (self.df.to_numpy().T @ (self.proba - one_hot)) / self.df.shape[0]
 
 	def gradient_descent(self):
 		alpha = 0.001
 		one_hot = self.get_one_hot()
-		for i in range(100000):
+		for i in range(10000):
 			self.weights = self.weights - alpha * self.get_weights_gradient(one_hot)
 			self.bias = sum(self.proba - one_hot) / self.sample_size
 		self.logits = self.df.to_numpy() @ self.weights + self.bias
-		self.softmax()
+		self.activation()
 		print(self.proba)
 
-	# Get probability
-	def softmax(self):
-		exp = np.exp(self.logits)
-		self.proba = exp / np.sum(exp, axis=1, keepdims=True)
+	# Get probability with sigmoid function
+	def activation(self, z):
+		self.proba = 1 / (1 + np.exp(-z))
+		print(self.proba)
+		exit()
+		# exp = np.exp(self.logits)
+		# self.proba = exp / np.sum(exp, axis=1, keepdims=True)
 	
 	# Data init
 	def init_data(self):
@@ -85,5 +89,5 @@ if __name__ == "__main__":
 	model = LogisticRegression(df)
 
 	model.preprocess_data()
-	model.softmax()
+	model.activation(model.df.to_numpy() @ model.weights)
 	model.gradient_descent()
