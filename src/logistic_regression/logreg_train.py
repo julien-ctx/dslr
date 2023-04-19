@@ -7,9 +7,31 @@ import numpy as np
 
 class LogisticRegression:
 	def __init__(self, df):
-		self.df = df
-		self.clean_data()
+		self.df = df.iloc[:, 6:]
+ 		
+	# All necessary operations to compute the prediction without any error.
+	def preprocess_data(self):
+		self.interpolate()
 		self.standardize()
+		self.sample_size = self.df.shape[0]
+		# Weights allows us, for each house to determine the sweep of every feature.
+		# It will be used later in our prediction and is set to 0.0 for the moment.
+		self.weights = np.zeros((self.df.shape[1], 4), dtype=float)
+		# Bias is added to take into account every value independently from their value.
+		self.bias = np.ones(4)
+		self.logits = self.df.to_numpy() @ self.weights + self.bias
+
+	# We fill NaN and null values with the mean of the column.
+	# It is necessary to avoid decreasing data accuracy.
+	def interpolate(self):
+		for x in range(self.df.shape[1]):
+			for y in range(self.df.shape[0]):
+				if pd.isna(self.df.iloc[y, x]):
+					self.df.iloc[y, x] = self.df.iloc[:, x].mean()
+
+	# Standardize data to improve performance and big number issues.
+	def standardize(self):
+		self.df = self.df.apply(lambda x : (x - np.mean(x)) / np.std(x))
 
 	def get_one_hot(self):
 		houses = ['Ravenclaw', 'Slytherin', 'Hufflepuff', 'Gryffindor']
@@ -18,8 +40,8 @@ class LogisticRegression:
 			house_one_hot = [0] * len(houses)
 			house_one_hot[houses.index(house)] = 1
 			houses_one_hot.append(house_one_hot)
-		houses_one_hot = np.tile(houses_one_hot, (1251, 1))
-		houses_one_hot = houses_one_hot[:1251, :]
+		houses_one_hot = np.tile(houses_one_hot, (self.sample_size, 1))
+		houses_one_hot = houses_one_hot[:self.sample_size, :]
 		return houses_one_hot
 
 	def get_weights_gradient(self, one_hot):
@@ -31,7 +53,7 @@ class LogisticRegression:
 		one_hot = self.get_one_hot()
 		for i in range(100000):
 			self.weights = self.weights - alpha * self.get_weights_gradient(one_hot)
-			self.bias = sum(self.proba - one_hot) / 1251
+			self.bias = sum(self.proba - one_hot) / self.sample_size
 		self.logits = self.df.to_numpy() @ self.weights + self.bias
 		self.softmax()
 		print(self.proba)
@@ -50,28 +72,7 @@ class LogisticRegression:
 		self.bias = np.ones(4)
 		self.logits = self.df.to_numpy() @ self.weights + self.bias
  
-	# Data preprocessing
-	def clean_data(self):
-		new_df = self.df.dropna()
-		self.df = new_df.iloc[:, 6:]
-
-	def standardize(self):
-		self.df = self.df.apply(lambda x : (x - np.mean(x)) / np.std(x))
- 
-	def get_df(self):
-		return self.df
-
 if __name__ == "__main__":
-	# Input list of cities
-	cities = ["Paris", "Bangkok", "London", "Atlanta"]
-	onehot_encoded = []
-
-	# Iterate through each city in the original list
-	
-
-	# Convert the result array to a NumPy array
-	onehot_encoded = np.array(onehot_encoded)
-
 	if len(sys.argv) != 2:
 		sys.exit("Error: wrong parameter number.")
 	if not os.path.exists(sys.argv[1]):
@@ -83,6 +84,6 @@ if __name__ == "__main__":
 
 	model = LogisticRegression(df)
 
-	model.init_data()
+	model.preprocess_data()
 	model.softmax()
 	model.gradient_descent()
