@@ -11,21 +11,30 @@ class LogisticRegression:
 		self.clean_data()
 		self.standardize()
 
+	def get_one_hot(self):
+		houses = ['Ravenclaw', 'Slytherin', 'Hufflepuff', 'Gryffindor']
+		houses_one_hot = []
+		for house in houses:
+			house_one_hot = [0] * len(houses)
+			house_one_hot[houses.index(house)] = 1
+			houses_one_hot.append(house_one_hot)
+		houses_one_hot = np.tile(houses_one_hot, (1251, 1))
+		houses_one_hot = houses_one_hot[:1251, :]
+		return houses_one_hot
+
 	def get_weights_gradient(self, one_hot):
 		a = self.proba - one_hot
 		return self.df.to_numpy().T @ (self.proba - one_hot) / self.df.shape[0]
 
 	def gradient_descent(self):
 		alpha = 0.001
-		one_hot = np.array([[1., 0., 0., 0.],
-							[0., 1., 0., 0.],
-							[0., 0., 1., 0.],
-							[0., 0., 0., 1.]])
-		one_hot = np.tile(one_hot, (1251, 1))
-		one_hot = one_hot[:1251, :]
-		for i in range(10000):
+		one_hot = self.get_one_hot()
+		for i in range(100000):
 			self.weights = self.weights - alpha * self.get_weights_gradient(one_hot)
 			self.bias = sum(self.proba - one_hot) / 1251
+		self.logits = self.df.to_numpy() @ self.weights + self.bias
+		self.softmax()
+		print(self.proba)
 
 	# Get probability
 	def softmax(self):
@@ -53,6 +62,16 @@ class LogisticRegression:
 		return self.df
 
 if __name__ == "__main__":
+	# Input list of cities
+	cities = ["Paris", "Bangkok", "London", "Atlanta"]
+	onehot_encoded = []
+
+	# Iterate through each city in the original list
+	
+
+	# Convert the result array to a NumPy array
+	onehot_encoded = np.array(onehot_encoded)
+
 	if len(sys.argv) != 2:
 		sys.exit("Error: wrong parameter number.")
 	if not os.path.exists(sys.argv[1]):
