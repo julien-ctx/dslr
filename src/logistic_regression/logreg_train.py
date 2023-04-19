@@ -11,11 +11,26 @@ class LogisticRegression:
 		self.clean_data()
 		self.standardize()
 
+	def get_weights_gradient(self, one_hot):
+		a = self.proba - one_hot
+		return self.df.to_numpy().T @ (self.proba - one_hot) / self.df.shape[0]
+
+	def gradient_descent(self):
+		alpha = 0.001
+		one_hot = np.array([[1., 0., 0., 0.],
+							[0., 1., 0., 0.],
+							[0., 0., 1., 0.],
+							[0., 0., 0., 1.]])
+		one_hot = np.tile(one_hot, (1251, 1))
+		one_hot = one_hot[:1251, :]
+		for i in range(10000):
+			self.weights = self.weights - alpha * self.get_weights_gradient(one_hot)
+			self.bias = sum(self.proba - one_hot) / 1251
+
 	# Get probability
 	def softmax(self):
 		exp = np.exp(self.logits)
-		self.softmax = exp / np.sum(exp, axis=1, keepdims=True)
-		print(self.softmax)
+		self.proba = exp / np.sum(exp, axis=1, keepdims=True)
 	
 	# Data init
 	def init_data(self):
@@ -51,3 +66,4 @@ if __name__ == "__main__":
 
 	model.init_data()
 	model.softmax()
+	model.gradient_descent()
