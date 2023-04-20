@@ -39,19 +39,14 @@ class LogisticRegression:
 		self.df = self.df.apply(lambda x : (x - np.mean(x)) / np.std(x))
 
 	def get_weights_gradient(self, y_binary):
-		return (self.df.to_numpy().T @ (self.hypothesis() - y_binary)) / self.df.shape[0]
+		return (self.df.to_numpy().T @ (self.sigmoid() - y_binary)) / self.df.shape[0]
 
 	def gradient_descent(self, y_binary):
 		alpha = 0.001
 		for _ in range(10000):
 			self.weights = self.weights - alpha * self.get_weights_gradient(y_binary)
-		self.logits = self.df.to_numpy() @ self.weights + self.bias
-		self.sigmoid()
-		print(self.sigmoid())
-		exit()
-
-	def hypothesis(self):
-		return self.sigmoid()
+		# self.logits = self.df.to_numpy() @ self.weights + self.bias
+		print(self.sigmoid()[1])
 
 	# Get probability with sigmoid function
 	def sigmoid(self):
