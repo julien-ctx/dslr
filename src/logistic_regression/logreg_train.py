@@ -8,10 +8,11 @@ import numpy as np
 
 class LogisticRegression:
 	def __init__(self, df):
-		self.df = df.iloc[:, 6:]
+		self.df  = df.drop('Index', axis=1).drop(df.columns[2:6], axis=1)
  		
 	# All necessary operations to compute the prediction without any error.
 	def preprocess_data(self):
+		self.convert()
 		self.interpolate()
 		self.standardize()
 		self.sample_size = self.df.shape[0]
@@ -22,6 +23,9 @@ class LogisticRegression:
 		self.bias = np.ones(4)
 		self.logits = self.df.to_numpy() @ self.weights + self.bias
 
+	def convert(self):
+		self.df['Hogwarts House'] = self.df['Hogwarts House'].replace('Hufflepuff', 1).replace('Gryffindor', 2).replace('Ravenclaw', 3).replace('Slytherin', 4)
+ 
 	# We fill NaN and null values with the mean of the column.
 	# It is necessary to avoid decreasing data accuracy.
 	def interpolate(self):
@@ -34,38 +38,27 @@ class LogisticRegression:
 	def standardize(self):
 		self.df = self.df.apply(lambda x : (x - np.mean(x)) / np.std(x))
 
-	def get_one_hot(self):
-		houses = ['Ravenclaw', 'Slytherin', 'Hufflepuff', 'Gryffindor']
-		houses_one_hot = []
-		for house in houses:
-			house_one_hot = [0] * len(houses)
-			house_one_hot[houses.index(house)] = 1
-			houses_one_hot.append(house_one_hot)
-		houses_one_hot = np.tile(houses_one_hot, (self.sample_size, 1))
-		houses_one_hot = houses_one_hot[:self.sample_size, :]
-		return houses_one_hot
+	def get_weights_gradient(self, y_binary):
+		return (self.df.to_numpy().T @ (self.hypothesis() - y_binary)) / self.df.shape[0]
 
-	def get_weights_gradient(self, one_hot):
-		a = self.proba - one_hot
-		return (self.df.to_numpy().T @ (self.proba - one_hot)) / self.df.shape[0]
-
-	def gradient_descent(self):
+	def gradient_descent(self, y_binary):
 		alpha = 0.001
-		one_hot = self.get_one_hot()
-		for i in range(10000):
-			self.weights = self.weights - alpha * self.get_weights_gradient(one_hot)
-			self.bias = sum(self.proba - one_hot) / self.sample_size
+		for _ in range(10000):
+			print(self.get_weights_gradient(y_binary))
+			exit()
+			self.weights = self.weights - alpha * self.get_weights_gradient(y_binary)
+			exit()
 		self.logits = self.df.to_numpy() @ self.weights + self.bias
 		self.activation()
 		print(self.proba)
+		exit()
+
+	def hypothesis(self):
+		return self.sigmoid(self.df @ self.weights)
 
 	# Get probability with sigmoid function
-	def activation(self, z):
+	def sigmoid(self, z):
 		self.proba = 1 / (1 + np.exp(-z))
-		print(self.proba)
-		exit()
-		# exp = np.exp(self.logits)
-		# self.proba = exp / np.sum(exp, axis=1, keepdims=True)
 	
 	# Data init
 	def init_data(self):
@@ -87,7 +80,9 @@ if __name__ == "__main__":
 		sys.exit(f"Error: {e}")
 
 	model = LogisticRegression(df)
-
 	model.preprocess_data()
-	model.activation(model.df.to_numpy() @ model.weights)
-	model.gradient_descent()
+	houses = ['Hufflepuff', 'Gryffindor', 'Ravenclaw', 'Slytherin']
+	for house in houses:
+		y_binary = (df['Hogwarts House'] == house).astype(float)
+		model.sigmoid(model.df @ model.weights)
+		model.gradient_descent(y_binary)
