@@ -1,14 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from matplotlib.patches import Rectangle
 
-houses = ["Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"]
-color = {
-    "Gryffindor": "red",
-    "Slytherin": "green",
-    "Ravenclaw": "blue",
-    "Hufflepuff": "yellow"
-}
+from utils import COLOR
 
 df = pd.read_csv('../../assets/dataset_train.csv')
 df.dropna(axis=0, inplace=True)
@@ -19,14 +12,19 @@ df_houses = {
     "Hufflepuff": df[df["Hogwarts House"] == "Hufflepuff"]
 }
 
-for h in houses:
-    plt.scatter(df_houses[h]["Defense Against the Dark Arts"], df_houses[h]["Astronomy"], color=color[h], label=h, alpha=0.5)
-plt.title("Defense Against the Dark Arts vs Astronomy")
-plt.xlabel("Defense Against the Dark Arts")
-plt.ylabel("Astronomy")
+fig = plt.figure(figsize=(12, 9))
+axs = fig.subplots(nrows=2, ncols=2)
 
-handles = [Rectangle((0,0),1,1,color=c,ec="k") for c in color.values()]
-plt.legend(handles, houses)
+for house, ax in zip(df_houses.items(), axs.flatten()):
+    name, data = house
+    ax.scatter(data["Defense Against the Dark Arts"], data["Astronomy"], color=COLOR[name], label=name, alpha=0.5)
+    ax.set_title(name)
+    ax.set_xlabel("Defense Against the Dark Arts")
+    ax.set_ylabel("Astronomy")
+
+# Put margins between subplots
+plt.subplots_adjust(wspace=0.4, hspace=0.4)
+
 plt.show()
 
 
