@@ -4,9 +4,12 @@ import matplotlib.pyplot as plt
 
 from utils import COLOR
 
-df = pd.read_csv('../../assets/dataset_train.csv')
-features_to_drop = ['Index', 'First Name', 'Last Name', 'Birthday', 'Best Hand']
-df.drop(features_to_drop, axis=1, inplace=True)
-df = pd.DataFrame.dropna(df, axis=0)
-sns.pairplot(df, hue='Hogwarts House', palette=COLOR)
+df = pd.read_csv('../../assets/dataset_train.csv', index_col=0)
+df.dropna(axis=0, inplace=True)
+df = df.drop(df.iloc[:, 1:5], axis=1)
+
+sns.set(font_scale=0.5)
+sns.set_style("ticks")
+sns.pairplot(df, hue='Hogwarts House', palette=COLOR, height=0.6, aspect=1.5, plot_kws={'s': 1})
+
 plt.show()
