@@ -64,6 +64,6 @@ class LogisticRegressionPredict:
 					self.sample_df.iloc[y, x] = self.sample_df.iloc[:, x].mean()
 		return self.sample_df
 
-	def sigmoid(self):
-		self.weights
-		return 1 / (1 + np.exp(-np.array(self.sample_df @ self.weights_df)))
+	def sigmoid(self, index):
+		house_weights = np.array(self.weights_df.iloc[:, index]).reshape(-1, 1)
+		return 1 / (1 + np.exp(-np.array(self.sample_df) @ house_weights))
