@@ -18,7 +18,7 @@ class LogisticRegression:
 		self.sample_size = self.df.shape[0]
 		# Weights allows us, for each house to determine the sweep of every feature.
 		# It will be used later in our prediction and is set to 0.0 for the moment.
-		self.weights = np.random.randn(self.df.shape[1], 4) * 0.01
+		self.weights = np.random.randn(self.df.shape[1], 1) * 0.01
 		# Bias is added to take into account every value independently from their value.
 		self.bias = np.ones(4)
 		self.logits = self.df.to_numpy() @ self.weights + self.bias
@@ -41,12 +41,14 @@ class LogisticRegression:
 	def get_weights_gradient(self, y_binary):
 		return (self.df.to_numpy().T @ (self.sigmoid() - y_binary)) / self.df.shape[0]
 
-	def gradient_descent(self, y_binary):
+	def gradient_descent(self, y_binary, house):
 		alpha = 0.001
 		for _ in range(10000):
 			self.weights = self.weights - alpha * self.get_weights_gradient(y_binary)
 		# self.logits = self.df.to_numpy() @ self.weights + self.bias
-		print(self.sigmoid()[1])
+		with open("weights.csv", "ab") as f:
+			f.write(f"{house}\n".encode())
+			np.savetxt(f, self.weights, fmt="%.16f")
 
 	# Get probability with sigmoid function
 	def sigmoid(self):
@@ -65,8 +67,10 @@ if __name__ == "__main__":
 	model = LogisticRegression(df)
 	model.preprocess_data()
 	houses = ['Hufflepuff', 'Gryffindor', 'Ravenclaw', 'Slytherin']
+	if os.path.exists("weights.csv"):
+		os.remove("weights.csv")
 	for house in houses:
 		y_binary = np.array((df['Hogwarts House'] == house).astype(float))
 		y_binary = np.reshape(y_binary, (1600, 1))
 		model.sigmoid()
-		model.gradient_descent(y_binary)
+		model.gradient_descent(y_binary, house)
