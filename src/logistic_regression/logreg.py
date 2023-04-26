@@ -53,8 +53,8 @@ class LogisticRegressionPredict:
 		self.sample_df = pd.read_csv(sample_path)
 		self.sample_df = self.sample_df.drop('Index', axis=1).drop(self.sample_df.columns[1:6], axis=1)
 		self.sample_df = self.interpolate()
+		self.standardize()
 		self.sample_df['Bias'] = np.ones(self.sample_df.shape[0])
-		
 		self.weights_df = pd.read_csv(weights_path)	
 
 	def interpolate(self):
@@ -63,6 +63,9 @@ class LogisticRegressionPredict:
 				if pd.isna(self.sample_df.iloc[y, x]):
 					self.sample_df.iloc[y, x] = self.sample_df.iloc[:, x].mean()
 		return self.sample_df
+	
+	def standardize(self):
+		self.sample_df = self.sample_df.apply(lambda x : (x - np.mean(x)) / np.std(x))
 
 	def sigmoid(self, index):
 		house_weights = np.array(self.weights_df.iloc[:, index]).reshape(-1, 1)
