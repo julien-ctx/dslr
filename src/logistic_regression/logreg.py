@@ -37,9 +37,19 @@ class LogisticRegressionTrain:
 		return (self.df.to_numpy().T @ (self.sigmoid() - y_binary)) / self.df.shape[0]
 
 	def gradient_descent(self, y_binary, house, weights_df):
+		base_filename = 'eval_'
+		n_files = len([f for f in os.listdir('../../assets') if os.path.isfile(f) and f.startswith(base_filename)])
+		eval_file = open(f'../../assets/{base_filename}{n_files}.csv', 'w+')
+
 		alpha = 0.001
 		for _ in range(10000):
 			self.weights = self.weights - alpha * self.get_weights(y_binary)
+			if _ % 100 == 0:
+				probabilities = self.sigmoid()
+				loss = -np.mean(y_binary * np.log(probabilities) + (1 - y_binary) * np.log(1 - probabilities))
+				# Print or store the loss, for example, appending it to a list
+				eval_file.write(f'{loss}\n')
+
 		# self.logits = self.df.to_numpy() @ self.weights + self.bias
 		return pd.concat([weights_df, pd.DataFrame(self.weights, columns=[house])], axis=1)
 
