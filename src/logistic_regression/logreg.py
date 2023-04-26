@@ -11,8 +11,11 @@ class LogisticRegressionTrain:
 		self.df = df
 		self.df = self.df.drop('Index', axis=1).drop(self.df.columns[1:6], axis=1)
 
+		self.houses = ['Hufflepuff', 'Gryffindor', 'Ravenclaw', 'Slytherin']
+
 	# All necessary operations to compute the prediction without any error.
 	def preprocess_data(self):
+		# self.convert()
 		self.interpolate()
 		self.standardize()
 		# Bias is added to take into account every value independently from their value.
@@ -20,6 +23,12 @@ class LogisticRegressionTrain:
 		# Weights allows us, for each house to determine the sweep of every feature.
 		# It will be used later in our prediction and is set to 0.0 for the moment.
 		self.weights = np.random.randn(self.df.shape[1], 1) * 0.01
+
+	# Convert birthday and best hand to integers to take them into account
+	# def convert(self):
+	# 	self.df['Best Hand'] = self.df['Best Hand'].replace('Left', 0).replace('Right', 1)
+	# 	print(self.df)
+	# 	exit()
 
 	# We fill NaN and null values with the mean of the column.
 	# It is necessary to avoid decreasing data accuracy.
@@ -50,7 +59,6 @@ class LogisticRegressionTrain:
 				# Print or store the loss, for example, appending it to a list
 				eval_file.write(f'{loss}\n')
 
-		# self.logits = self.df.to_numpy() @ self.weights + self.bias
 		return pd.concat([weights_df, pd.DataFrame(self.weights, columns=[house])], axis=1)
 
 	# Get probability with sigmoid function
@@ -60,12 +68,17 @@ class LogisticRegressionTrain:
 
 class LogisticRegressionPredict:
 	def __init__(self, sample_path, weights_path):	
+
+		# Get dataframe of samples (which are the people we want to put in one of the 4 houses).
 		self.sample_df = pd.read_csv(sample_path)
 		self.sample_df = self.sample_df.drop('Index', axis=1).drop(self.sample_df.columns[1:6], axis=1)
 		self.sample_df = self.interpolate()
 		self.standardize()
 		self.sample_df['Bias'] = np.ones(self.sample_df.shape[0])
-		self.weights_df = pd.read_csv(weights_path)	
+		
+		# Get weights which will be used to compute the probability with the value of the different features.
+		self.weights_df = pd.read_csv(weights_path)
+		self.houses = ['Hufflepuff', 'Gryffindor', 'Ravenclaw', 'Slytherin']
 
 	def interpolate(self):
 		for x in range(self.sample_df.shape[1]):
@@ -80,3 +93,9 @@ class LogisticRegressionPredict:
 	def sigmoid(self, index):
 		house_weights = np.array(self.weights_df.iloc[:, index]).reshape(-1, 1)
 		return 1 / (1 + np.exp(-np.array(self.sample_df) @ house_weights))
+
+	def find_house(self, i, probs):
+		sample_probs = [probs[j][i][0] for j in range(len(probs))]
+		max_prob = max(sample_probs)
+		house = sample_probs.index(max_prob)
+		return self.houses[house]
