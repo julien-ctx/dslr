@@ -5,7 +5,7 @@ from logreg import LogisticRegressionTrain
 
 if __name__ == "__main__":
 	if len(sys.argv) != 2:
-		sys.exit("Error: wrong parameter number.")
+		sys.exit("Error: wrong parameter number.\nUsage: python3 logreg_train.py [dataset_train.csv]")
 	if not os.path.exists(sys.argv[1]):
 		sys.exit("Error: dataset doesn't exist.")
 	try:

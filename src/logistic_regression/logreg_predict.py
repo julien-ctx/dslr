@@ -15,7 +15,7 @@ def find_max(i, probs):
 
 if __name__ == "__main__":
 	if len(sys.argv) != 3:
-		sys.exit("Error: wrong parameter number.")
+		sys.exit("Error: wrong parameter number.\nUsage: python3 logreg_train.py [dataset_test.csv] [weights.csv]")
 	if not os.path.exists(sys.argv[1]) or not os.path.exists(sys.argv[2]):
 		sys.exit("Error: dataset or weights file doesn't exist.")
 
