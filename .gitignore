@@ -131,3 +131,5 @@ dmypy.json
 **.DS_Store
 weights.csv
 custom_test.csv
+houses.csv
+weights.csv
