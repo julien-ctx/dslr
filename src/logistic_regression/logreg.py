@@ -20,7 +20,6 @@ class LogisticRegression:
 		self.convert()
 		self.interpolate()
 		self.standardize()
-  
 		# Bias is added to take into account every value independently from their value.
 		self.sample['Bias'] = np.ones(self.sample.shape[0])
 		# Weights allows us, for each house to determine the sweep of every feature.
