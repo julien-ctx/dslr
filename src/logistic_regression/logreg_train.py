@@ -1,11 +1,11 @@
 import sys, os
 import pandas as pd
 import numpy as np
-from logreg import LogisticRegressionTrain
+from logreg import LogisticRegression 
 
 if __name__ == "__main__":
 	if len(sys.argv) != 2:
-		sys.exit("Error: wrong parameter number.")
+		sys.exit("Error: wrong parameter number.\nUsage: python3 logreg_train.py [dataset_train.csv]")
 	if not os.path.exists(sys.argv[1]):
 		sys.exit("Error: dataset doesn't exist.")
 	try:
@@ -13,8 +13,8 @@ if __name__ == "__main__":
 	except Exception as e:
 		sys.exit(f"Error: {e}")
 
-	model = LogisticRegressionTrain(df)
-	model.preprocess_data()
+	model = LogisticRegression()
+	model.prepare_training(df)
 	
 	if os.path.exists("weights.csv"):
 		os.remove("weights.csv")
@@ -24,7 +24,8 @@ if __name__ == "__main__":
 	for house in houses:
 		y_binary = np.array((df['Hogwarts House'] == house).astype(float))
 		y_binary = np.reshape(y_binary, (1600, 1))
-		model.sigmoid()
+		model.sigmoid(model.weights)
 		weights_df = model.gradient_descent(y_binary, house, weights_df)
 
 	weights_df.to_csv('../../assets/weights.csv', index=False)
+	print('Weights have been successfully computed and stored in weights.csv in assets folder')

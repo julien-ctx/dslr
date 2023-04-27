@@ -133,3 +133,5 @@ weights.csv
 custom_test.csv
 houses.csv
 weights.csv
+eval_*
+to_predict.csv
