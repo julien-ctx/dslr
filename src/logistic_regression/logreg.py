@@ -16,7 +16,6 @@ class LogisticRegression:
 		# Clean dataframe to only keep input features.
 		self.sample = df
 		self.sample = self.sample.drop('Index', axis=1).drop(self.sample.columns[1:4], axis=1)
-
 		self.convert()
 		self.interpolate()
 		self.standardize()
@@ -60,6 +59,22 @@ class LogisticRegression:
 	# Standardize data to improve performance and big number issues.
 	def standardize(self):
 		self.sample = self.sample.apply(lambda x : (x - np.mean(x)) / np.std(x))
+
+	def fit(self, df):
+		self.prepare_training(df)
+	
+		if os.path.exists("weights.csv"):
+			os.remove("weights.csv")
+		weights_df = pd.DataFrame()
+
+		for house in self.houses:
+			y_binary = np.array((df['Hogwarts House'] == house).astype(float))
+			y_binary = np.reshape(y_binary, (self.sample.shape[0], 1))
+			self.sigmoid(self.weights)
+			weights_df = self.gradient_descent(y_binary, house, weights_df)
+
+		weights_df.to_csv('../../assets/weights.csv', index=False)
+		print('Weights have been successfully computed and stored in weights.csv in assets folder')
 
 	def gradient(self, y_binary):
 		return (self.sample.to_numpy().T @ (self.sigmoid(self.weights) - y_binary)) / self.sample.shape[0]
