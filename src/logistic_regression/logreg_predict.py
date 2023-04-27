@@ -12,7 +12,6 @@ if __name__ == "__main__":
 	model = LogisticRegression()
 	model.prepare_prediction(sys.argv[1], sys.argv[2])
 
-	houses = ['Hufflepuff', 'Gryffindor', 'Ravenclaw', 'Slytherin']
 	probs = []
 	house_results = []
 	# Get probabilities of samples for each house, thanks to sigmoid function and weights.

@@ -14,18 +14,4 @@ if __name__ == "__main__":
 		sys.exit(f"Error: {e}")
 
 	model = LogisticRegression()
-	model.prepare_training(df)
-	
-	if os.path.exists("weights.csv"):
-		os.remove("weights.csv")
-	weights_df = pd.DataFrame()
-
-	houses = ['Hufflepuff', 'Gryffindor', 'Ravenclaw', 'Slytherin']
-	for house in houses:
-		y_binary = np.array((df['Hogwarts House'] == house).astype(float))
-		y_binary = np.reshape(y_binary, (1600, 1))
-		model.sigmoid(model.weights)
-		weights_df = model.gradient_descent(y_binary, house, weights_df)
-
-	weights_df.to_csv('../../assets/weights.csv', index=False)
-	print('Weights have been successfully computed and stored in weights.csv in assets folder')
+	model.fit(df)
