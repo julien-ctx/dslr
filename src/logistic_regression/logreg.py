@@ -11,6 +11,7 @@ from datetime import datetime
 class LogisticRegression:
 	def __init__(self):
 		self.houses = ['Hufflepuff', 'Gryffindor', 'Ravenclaw', 'Slytherin']
+		self.alpha = 0.001
 		
 	def prepare_training(self, df):
 		# Clean dataframe to only keep input features.
@@ -76,8 +77,6 @@ class LogisticRegression:
 		print('Weights have been successfully computed and stored in weights.csv in assets folder')
 
 	def gradient(self, batch, y_binary):
-		# print(batch.shape, self.sigmoid(batch, self.weights).shape, self.weights.shape, y_binary.shape)
-		# exit()
 		return (batch.T @ (self.sigmoid(batch, self.weights) - y_binary)) / batch.shape[0]
 
 	def stochastic_gradient_descent(self, y_binary, house, weights):
@@ -85,18 +84,17 @@ class LogisticRegression:
 		n_files = len([f for f in os.listdir('../../assets') if os.path.isfile(f) and f.startswith(base_filename)])
 		eval_file = open(f'../../assets/{base_filename}{n_files}.csv', 'w+')
 
-		alpha = 0.001
 		batch_size = int(self.sample.shape[0] / 25)
 		for _ in range(1000):
 			batch = self.sample.sample(n=batch_size)
 			base = self.sample.index.min()
 			y_binary_batch = y_binary[batch.index - base]
-			self.weights = self.weights - alpha * self.gradient(batch.to_numpy(), y_binary_batch)
-			# if _ % 100 == 0:
-			# 	probabilities = self.sigmoid(self.sample.to_numpy(), self.weights)
-			# 	loss = -np.mean(y_binary_batch * np.log(probabilities) + (1 - y_binary_batch) * np.log(1 - probabilities))
-			# 	# Print or store the loss, for example, appending it to a list
-			# 	eval_file.write(f'{loss}\n')
+			self.weights = self.weights - self.alpha * self.gradient(batch.to_numpy(), y_binary_batch)
+			if _ % 100 == 0:
+				probabilities = self.sigmoid(batch.to_numpy(), self.weights)
+				loss = -np.mean(y_binary_batch * np.log(probabilities) + (1 - y_binary_batch) * np.log(1 - probabilities))
+				# Print or store the loss, for example, appending it to a list
+				eval_file.write(f'{loss}\n')
 
 		return pd.concat([weights, pd.DataFrame(self.weights, columns=[house])], axis=1)
 
@@ -105,9 +103,8 @@ class LogisticRegression:
 		n_files = len([f for f in os.listdir('../../assets') if os.path.isfile(f) and f.startswith(base_filename)])
 		eval_file = open(f'../../assets/{base_filename}{n_files}.csv', 'w+')
 
-		alpha = 0.001
 		for _ in range(1000):
-			self.weights = self.weights - alpha * self.gradient(self.sample.to_numpy(), y_binary)
+			self.weights = self.weights - self.alpha * self.gradient(self.sample.to_numpy(), y_binary)
 			if _ % 100 == 0:
 				probabilities = self.sigmoid(self.sample.to_numpy(), self.weights)
 				loss = -np.mean(y_binary * np.log(probabilities) + (1 - y_binary) * np.log(1 - probabilities))
