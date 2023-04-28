@@ -73,7 +73,10 @@ class LogisticRegression:
 			y_binary = np.array((df['Hogwarts House'] == house).astype(float))
 			y_binary = np.reshape(y_binary, (self.sample.shape[0], 1))
 			# self.sigmoid(self.sample.to_numpy(), self.weights)
-			weights_df = self.gradient_descent(y_binary, house, weights_df)
+			if self.mode == LogRegMode.DEFAULT:
+				weights_df = self.gradient_descent(y_binary, house, weights_df)
+			else:
+				weights_df = self.stochastic_gradient_descent(y_binary, house, weights_df)
 
 		weights_df.to_csv('../../assets/weights.csv', index=False)
 		print('Weights have been successfully computed and stored in weights.csv in assets folder')
@@ -87,7 +90,7 @@ class LogisticRegression:
 		eval_file = open(f'../../assets/{base_filename}{n_files}.csv', 'w+')
 
 		batch_size = int(self.sample.shape[0] / 25)
-		for _ in range(1000):
+		for _ in range(10000):
 			batch = self.sample.sample(n=batch_size)
 			base = self.sample.index.min()
 			y_binary_batch = y_binary[batch.index - base]
@@ -105,16 +108,13 @@ class LogisticRegression:
 		n_files = len([f for f in os.listdir('../../assets') if os.path.isfile(f) and f.startswith(base_filename)])
 		eval_file = open(f'../../assets/{base_filename}{n_files}.csv', 'w+')
 
-		for _ in range(1000):
+		for _ in range(10000):
 			self.weights = self.weights - self.alpha * self.gradient(self.sample.to_numpy(), y_binary)
 			if _ % 100 == 0:
 				probabilities = self.sigmoid(self.sample.to_numpy(), self.weights)
 				loss = -np.mean(y_binary * np.log(probabilities) + (1 - y_binary) * np.log(1 - probabilities))
 				eval_file.write(f'{loss}\n')
 		return pd.concat([weights, pd.DataFrame(self.weights, columns=[house])], axis=1)
-
-	def mini_batch_gd():
-		pass
 
 	# Get probability with sigmoid function
 	def sigmoid(self, batch, weights):

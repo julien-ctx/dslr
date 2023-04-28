@@ -14,8 +14,8 @@ if __name__ == "__main__":
 	except Exception as e:
 		sys.exit(f"Error: {e}")
 
-	mode = input("Choose a logistic regression mode to train the model:\n1 - Default\n2 - Stochastic\n3 - Mini-batch\n")
-	if mode not in ['1', '2', '3']:
+	mode = input("Choose a logistic regression mode to train the model:\n1 - Default\n2 - Stochastic\n")
+	if mode not in ['1', '2']:
 		sys.exit("Error: wrong mode.")
 	
 	timer = Timer()
