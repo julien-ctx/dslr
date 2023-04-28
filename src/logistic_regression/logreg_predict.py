@@ -16,7 +16,7 @@ if __name__ == "__main__":
 	house_results = []
 	# Get probabilities of samples for each house, thanks to sigmoid function and weights.
 	for index, house in enumerate(model.weights.columns):
-		probs.append(model.sigmoid(np.array(model.weights.iloc[:, index]).reshape(-1, 1)).tolist())
+		probs.append(model.sigmoid(model.sample.to_numpy(), np.array(model.weights.iloc[:, index]).reshape(-1, 1)).tolist())
 	# Find the house with the maximum probability and store it to create houses.csv later.
 	for i in range(model.sample.shape[0]):
 		house_results.append(model.find_house(i, probs))
