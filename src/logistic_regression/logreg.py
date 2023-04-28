@@ -17,6 +17,8 @@ class LogisticRegression:
 		# Clean dataframe to only keep input features.
 		self.sample = df
 		self.sample = self.sample.drop('Index', axis=1).drop(self.sample.columns[1:4], axis=1)
+		self.sample = self.sample.drop('Arithmancy', axis=1)
+		self.sample = self.sample.drop('Care of Magical Creatures', axis=1)
 		self.convert()
 		self.interpolate()
 		self.standardize()
@@ -30,6 +32,8 @@ class LogisticRegression:
 		# Get dataframe of samples (which are the people we want to put in one of the 4 houses).
 		self.sample = pd.read_csv(sample_path)
 		self.sample = self.sample.drop('Index', axis=1).drop(self.sample.columns[1:4], axis=1)
+		self.sample = self.sample.drop('Arithmancy', axis=1)
+		self.sample = self.sample.drop('Care of Magical Creatures', axis=1)
 		self.convert()
 		self.interpolate()
 		self.standardize()
