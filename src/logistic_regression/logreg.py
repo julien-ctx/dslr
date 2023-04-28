@@ -3,16 +3,18 @@ import pandas as pd
 import numpy as np
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
+from utils import LogRegMode
 
 # https://fr.wikipedia.org/wiki/Encodage_one-hot
 # https://en.wikipedia.org/wiki/Softmax_function
 # https://en.wikipedia.org/wiki/Sigmoid_function
 
 class LogisticRegression:
-	def __init__(self):
+	def __init__(self, mode):
 		self.houses = ['Hufflepuff', 'Gryffindor', 'Ravenclaw', 'Slytherin']
 		self.alpha = 0.001
-		
+		self.mode = mode
+
 	def prepare_training(self, df):
 		# Clean dataframe to only keep input features.
 		self.sample = df
@@ -108,10 +110,11 @@ class LogisticRegression:
 			if _ % 100 == 0:
 				probabilities = self.sigmoid(self.sample.to_numpy(), self.weights)
 				loss = -np.mean(y_binary * np.log(probabilities) + (1 - y_binary) * np.log(1 - probabilities))
-				# Print or store the loss, for example, appending it to a list
 				eval_file.write(f'{loss}\n')
-
 		return pd.concat([weights, pd.DataFrame(self.weights, columns=[house])], axis=1)
+
+	def mini_batch_gd():
+		pass
 
 	# Get probability with sigmoid function
 	def sigmoid(self, batch, weights):
