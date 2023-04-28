@@ -18,7 +18,7 @@ if __name__ == "__main__":
 	
 	if not os.path.exists('../../assets/to_predict.csv'):
 		sys.exit('Error: missing file(s) to compute accuracy.')
-	os.system('python3 ../logistic_regression/logreg_train.py ../../assets/dataset_train.csv')
+	os.system('python3 ../logistic_regression/logreg_train.py ../../assets/dataset_train.csv Default')
 	if not os.path.exists('../../assets/weights.csv'):
 		sys.exit('Error: missing file(s) to compute accuracy.')
 	os.system('python3 ../logistic_regression/logreg_predict.py ../../assets/to_predict.csv ../../assets/weights.csv')

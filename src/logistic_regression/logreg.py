@@ -3,17 +3,15 @@ import pandas as pd
 import numpy as np
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
-from utils import LogRegMode
 
 # https://fr.wikipedia.org/wiki/Encodage_one-hot
 # https://en.wikipedia.org/wiki/Softmax_function
 # https://en.wikipedia.org/wiki/Sigmoid_function
 
 class LogisticRegression:
-	def __init__(self, mode):
+	def __init__(self):
 		self.houses = ['Hufflepuff', 'Gryffindor', 'Ravenclaw', 'Slytherin']
 		self.alpha = 0.001
-		self.mode = mode
 
 	def prepare_training(self, df):
 		# Clean dataframe to only keep input features.
@@ -63,7 +61,7 @@ class LogisticRegression:
 	def standardize(self):
 		self.sample = self.sample.apply(lambda x : (x - np.mean(x)) / np.std(x))
 
-	def fit(self, df):
+	def fit(self, df, mode):
 		self.prepare_training(df)
 		if os.path.exists("weights.csv"):
 			os.remove("weights.csv")
@@ -73,7 +71,7 @@ class LogisticRegression:
 			y_binary = np.array((df['Hogwarts House'] == house).astype(float))
 			y_binary = np.reshape(y_binary, (self.sample.shape[0], 1))
 			# self.sigmoid(self.sample.to_numpy(), self.weights)
-			if self.mode == LogRegMode.DEFAULT:
+			if mode == 'Default':
 				weights_df = self.gradient_descent(y_binary, house, weights_df)
 			else:
 				weights_df = self.stochastic_gradient_descent(y_binary, house, weights_df)

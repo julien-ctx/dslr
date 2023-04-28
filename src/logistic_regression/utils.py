@@ -1,10 +1,4 @@
-from enum import Enum
 import time
-
-class LogRegMode(Enum):
-    DEFAULT = 1
-    STOCHASTIC = 2
-    MINI_BATCH = 3
 
 class Timer:
     def tic(self, msg):

@@ -19,7 +19,7 @@ kf = KFold(n_splits=5)
 total_accuracy = []
 for train_i, val_i in kf.split(df):
 	model = LogisticRegression()
-	model.fit(df.iloc[min(train_i):max(train_i), :])
+	model.fit(df.iloc[min(train_i):max(train_i), :], 'Default')
 	
 	tmp_predict = df.iloc[min(val_i):max(val_i) + 1, :]
 	tmp_predict = tmp_predict.drop('Hogwarts House', axis=1)
