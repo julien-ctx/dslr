@@ -21,7 +21,7 @@ In this project, we have 4 classes: *Hufflepuff, Gryffindor, Ravenclaw, Slytheri
 
 ### Data preprocessing
 
-Thanks to **histograms, pair plots and scatter plots** that you can find in `src/logisitic_regression/visualization` folder, we decided to remove irrelevant features from the dataset (similar distribution features, etc).
+Thanks to **histograms, pair plots and scatter plots** that you can find in `src/logistic_regression/visualization` folder, we decided to remove irrelevant features from the dataset (similar distribution features, etc).
 
 After that, we improved the model by **converting features** such as dates of birth into age, and best hand into binary values.
 
