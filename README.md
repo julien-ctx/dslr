@@ -17,7 +17,7 @@ CSV files used by the model are stored in `assets` folder.
 
 ## Model and techniques
 
-In this project, we have 4 classes: Hufflepuff, Gryffindor, Ravenclaw, Slytherin. We use `dataset_train.csv` for training and `dataset_test` for validation.
+In this project, we have 4 classes: *Hufflepuff, Gryffindor, Ravenclaw, Slytherin*. We use `dataset_train.csv` for training and `dataset_test` for validation.
 
 ### Data preprocessing
 
@@ -32,6 +32,11 @@ Usually, logistic regression models use **softmax function** in order to determi
 In this project, we are using **sigmoid function**, and therefore we train the model **once for each class**. After that, we select the class with the **biggest probability** and make our prediction accordingly.
 
 **Gradient descent** is used to reduce the loss, with `α = 0.001` and `epochs = 10000`. 1000 epochs is usually enough to retrieve accurate training weights.
+
+# Bonuses
+
+A few more features have been implemented to enhance the model performance, or to visualize the data:
+- Stochastic Gradient Descent (SGD).
 
 ## Authors
 
